@@ -9,35 +9,15 @@ const TodoHome = () => {
     const [editableTodoId, setEditableTodoId] = useState(-1)
     const [editedValue, setEditedValue] = useState('')
     const [selectedFilter, setFilter] = useState('all')
-    const [darkMode, setDarkMode] = useState(false)
+    
     const storedTodos = JSON.parse(localStorage.getItem('todos') || '[]')
     const editInputRef = useRef(null)
 
 
 
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme')
-        if (savedTheme === 'dark') {
-            setDarkMode(true)
-        }
-    }, [])
+   
     
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark')
-           
-        } else {
-            document.documentElement.classList.remove('dark')
-           
-        }
-    }, [darkMode])
-
-    // to toggle theme
-    const toggleTheme = () => {
-        const newTheme = !darkMode
-        setDarkMode(newTheme)
-        localStorage.setItem('theme', newTheme ? 'dark' : 'light')
-    }
+    
 
     // Load todos from localStorage on component mount
     useEffect(() => {
@@ -121,16 +101,8 @@ const TodoHome = () => {
 
     return (
         <div className=''>
-            <div className='border dark:bg-black  w-7xl mx-auto h-screen'>
-                <div className='text-3xl flex justify-between px-6 font-bold text-center mt-10 dark:text-white'>
-                    <span>Todo App</span>
-                    <button
-                        onClick={toggleTheme}
-                        className="ml-4 p-2 rounded-lg bg-gray-200 dark:bg-gray-600"
-                    >
-                        {darkMode ? <Sun /> : <Moon />}
-                    </button>
-                </div>
+            <div className='   w-7xl mx-auto h-screen'>
+                
                 <div className=' flex justify-center gap-4 my-16 '>
                     <input
                         type="text"
