@@ -1,4 +1,4 @@
-import Handlers from "../utils/Handlers"
+import Handlers from "../utils/Handlers.js"
 
 
 export const AuthenticateUser = async (req,res,next) =>{

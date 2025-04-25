@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     notes:[{
         note:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:'Notes'
+            ref:'Note'
         }
     }]
 },{

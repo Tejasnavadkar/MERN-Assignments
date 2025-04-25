@@ -1,6 +1,6 @@
-import userServices from "../Services/userServices"
-import Handlers from "../utils/Handlers"
-import PasswordHandler from "../utils/PasswordHandler"
+import userServices from "../Services/userServices.js"
+import Handlers from "../utils/Handlers.js"
+import PasswordHandler from "../utils/PasswordHandler.js"
 
 
 const registerUserController = async (req,res) => {
@@ -51,7 +51,7 @@ try {
 } catch (error) {
      res.status(500).json({
         msg:'server error',
-        error:error
+        error:error.message
      })
 }
 }
@@ -67,7 +67,7 @@ try {
         })
     }
 
-    const isUserExist = userServices.findUser(email)
+    const isUserExist = await userServices.findUser(email)
 
     if(!isUserExist){
         return res.status(402).json({msg:'username or password not exist'})
@@ -92,9 +92,10 @@ try {
     token:token
    })
 } catch (error) {
+    console.log('err in login controller:',error)
     res.status(500).json({
         msg:'server error',
-        error:error
+        error:error.message
      })
 }
 

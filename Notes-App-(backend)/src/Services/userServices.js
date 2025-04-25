@@ -1,18 +1,20 @@
-import UserModel from "../Models/User.Model"
+import UserModel from "../Models/User.Model.js"
 
 
 
 const findUser = async (email) => {
 
     try {
-
-        const user = await UserModel.findOne({email})
+        // populate to show entire notes
+        const user = await UserModel.findOne({email}).populate({
+            path: 'notes.note',
+            model: 'Note'
+        })
         return user
 
     } catch (error) {
         throw new Error('error in findUser service:',error)
     }
-
 }
 
 const createUser = async (payload) => {
