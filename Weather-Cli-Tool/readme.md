@@ -8,6 +8,7 @@ A command-line interface tool to check weather conditions for any city using the
 - Shows temperature, weather conditions, and wind details
 - Colorful and styled output in the terminal
 - Easy to use command-line interface
+- Caching mechanism using json file to reduce API calls (30-minute cache) 
 
 ## Prerequisites
 

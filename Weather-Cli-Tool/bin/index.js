@@ -40,6 +40,7 @@ const getWeather = async () => {
             condition: ${response.data?.weather?.[0].main}
             Wind Speed: ${response.data?.wind?.speed} m/s
             Wind deg:${response.data?.wind?.deg}°
+            ${response.cached ? '(Cached data)':'(Live data)'}
             `), { padding: 1, borderColor: 'green', dimBorder: true }));
 
         }
