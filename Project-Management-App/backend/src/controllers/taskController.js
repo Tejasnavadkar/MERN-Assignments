@@ -41,6 +41,29 @@ const createTaskController = async (req, res) => {
 
 }
 
+const getTaskByIdController = async (req,res) =>{
+
+    const {taskId} = req.params
+
+   try {
+    const task = await taskServices.getTask(taskId)
+
+   if(!task){
+    return res.status(404).json({
+        msg:'task not found with this id'
+    })
+   }
+
+   res.status(201).json({
+    msg:'task',
+    task:task
+   })
+   } catch (error) {
+     return res.status(500).json({message:'server error',error:error.message})
+   }
+
+}
+
 const updateTaskController = async (req, res) => {
 
    try {
@@ -143,5 +166,6 @@ export default {
     createTaskController,
     updateTaskController,
     deleteTaskController,
-    moveTaskController
+    moveTaskController,
+    getTaskByIdController
 }

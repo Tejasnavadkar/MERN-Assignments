@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
 const Login = () => {
@@ -9,6 +9,7 @@ const Login = () => {
             password: "",
         });
         // const [validationErrors,setValidationErrors] = useState({})
+       const navigate = useNavigate()
     
         const handleSubmit = async (e) =>{
             e.preventDefault()
@@ -16,8 +17,14 @@ const Login = () => {
             // api call
 
            try {
-            const response = await axios.post(`${import.meta.BASE_URL}/api/user/login`,signinInfo)
+            console.log('env',import.meta.env.VITE_BASE_URL)
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/loginUser`,signinInfo)
            console.log('response',response)
+           if(response.status === 201){
+            localStorage.setItem('token',response.data.token)
+            localStorage.setItem('loggedInUser',JSON.stringify(response.data.user))
+            navigate('/dashboard')
+           }
 
            } catch (error) {
             console.error('err',error)

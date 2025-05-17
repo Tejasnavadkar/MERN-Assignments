@@ -19,6 +19,23 @@ const findUser = async (email) => {
     }
 }
 
+const getAllUsers = async () => {
+
+    try {
+        // populate to show entire notes
+        // const user = await userModel.findOne({email}).populate({
+        //     path: 'notes.note',
+        //     model: 'Note'
+        // })
+
+       const allUsers = await userModel.find()
+        return allUsers
+
+    } catch (error) {
+        throw new Error(`error in getAllUsers service:${error}`)
+    }
+}
+
 const createUser = async (payload) => {
 
     try {
@@ -34,5 +51,6 @@ const createUser = async (payload) => {
 
 export default {
     findUser,
-    createUser
+    createUser,
+    getAllUsers
 }

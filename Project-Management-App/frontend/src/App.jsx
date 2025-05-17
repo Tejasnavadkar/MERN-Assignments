@@ -4,6 +4,10 @@ import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import DashboardPage from './pages/DashboardPage'
 import Protected from './components/Protected'
+import CreateTaskPage from './pages/CreateTaskPage'
+import CreateBoardPage from './pages/CreateBoardPage'
+import CreateListPage from './pages/CreateListPage'
+import AddMemberPage from './pages/AddMemberPage'
 
 function App() {
 
@@ -18,6 +22,35 @@ function App() {
                   <DashboardPage/>
                 </Protected>
               }/>
+              <Route path='/createTask/:listId' element={
+                <Protected>
+                  <CreateTaskPage/>
+                </Protected>
+              }/>
+
+               <Route path='/updateTask/:taskId' element={
+                <Protected>
+                  <CreateTaskPage/>
+                </Protected>
+              }/>
+
+              <Route path='/createBoard' element={
+                <Protected>
+                  <CreateBoardPage/>
+                </Protected>
+              } />
+
+              <Route path='/createList/:boardId' element={
+                <Protected>
+                  <CreateListPage/>
+                </Protected>
+              } />
+
+              <Route path='/addMember/:boardId' element={
+                <Protected>
+                  <AddMemberPage/>
+                </Protected>
+              } />
            </Routes>
       </BrowserRouter>
     </>

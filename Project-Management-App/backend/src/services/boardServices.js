@@ -12,11 +12,19 @@ const createBoard = async (payload) => {
 
 }
 
-const getAllBoards = async (userId) => {
+const getAllBoards = async () => {
 
     try {
-     const allBoards = await BoardModel.find({members:userId})
+     const allBoards = await BoardModel.find().populate({ // here we perform nested populations
+      path:'lists',
+      populate:{
+         path:'tasks',
+         select: 'title description assignedTo activityLog createdAt' // specify fields you want from tasks
+      }
+     }).populate('members')
+     
      return allBoards
+
     } catch (error) {
      throw new Error('err in getBoards service:',error.message)
     }
@@ -46,11 +54,46 @@ const getAllBoards = async (userId) => {
 
  }
 
+ const deleteBoard = async (boardId) => {
+    try {
+        const board = await BoardModel.findById(boardId)
+            .populate({  // nested population
+                path: 'lists',
+                populate: {
+                    path: 'tasks'
+                }
+            });
+        
+        if (!board) {
+            throw new Error('Board not found');
+        }
+
+        // Delete all tasks from each list
+        for (const list of board.lists) {
+            if (list.tasks && list.tasks.length > 0) {
+                await Promise.all(list.tasks.map(task => 
+                    task.deleteOne() // delete each task at every iteration
+                ));
+            }
+            // Delete the list
+            await list.deleteOne(); // after deleting all tasks, delete list
+        }
+
+        // Finally delete the board
+        await board.deleteOne();  // then finally delete board
+        
+        return true;
+    } catch (error) {
+        throw new Error(`Error in deleteBoard service: ${error.message}`);
+    }
+}
+
  
 
 export default {
     createBoard,
     getAllBoards,
     getBoardId,
-    updateBoard
+    updateBoard,
+    deleteBoard
 }

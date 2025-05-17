@@ -5,8 +5,14 @@ import jwtHandler from "../utils/jwtHandler.js"
 export const AuthenticateUser = async (req,res,next) =>{
 
      try {
-        const token = req.headers.authorization.replace('Bearer ','') //  replace Bearer with ''
-        // console.log('token--',token)
+       
+         const authHeader = req.headers.authorization
+
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ msg: 'No authorization token provided' })
+        }
+
+        const token = authHeader.replace('Bearer ', '')  // replace Bearer with '' / remove Bearer
         if(!token){
             return res.status(401).json('token not found')
         }
@@ -25,7 +31,7 @@ export const AuthenticateUser = async (req,res,next) =>{
         next()
         
      } catch (error) {
-        throw new Error(`err in middleware:${error}`)
+        throw new Error(`err in middleware:${error.message}`)
      }
 
 }

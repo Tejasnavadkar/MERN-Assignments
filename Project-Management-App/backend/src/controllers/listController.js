@@ -1,5 +1,6 @@
 import BoardModel from "../models/Board.js";
 import listModel from "../models/List.js";
+import boardServices from "../services/boardServices.js";
 import listServices from "../services/listServices.js";
 
 const createListController = async (req, res) => {
@@ -47,9 +48,13 @@ const updateListController = async (req, res) => {
 
 const deleteListController = async (req, res) => {
     const { listId } = req.params;
+    const {boardId} = req.body
   
-    const list = await listModel.findByIdAndDelete(listId);
-  
+     await listModel.findByIdAndDelete(listId); // here when i delete list then also delete its id from board model
+    const board = await BoardModel.findById(boardId)
+    board.lists = board.lists.filter((list)=>list.toString() !== listId)
+    await board.save()
+
     res.status(200).json({ message: 'List deleted' });
 };
 

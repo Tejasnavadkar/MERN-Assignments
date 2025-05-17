@@ -99,8 +99,32 @@ const loginUserController = async (req,res) => {
 
 }
 
+const getUserController = async (req,res) =>{
+
+   try {
+     const allUsers = await userServices.getAllUsers()
+    
+    if(!allUsers){
+        return res.status(402).json('users not fond')
+    }
+
+    return res.status(201).json({
+        msg:'allUsers',
+        allUsers:allUsers
+    })
+
+   } catch (error) {
+     res.status(500).json({
+        msg:'server error',
+        error:error.message
+    })
+   }
+
+}
+
 export default {
     registerUserController,
-    loginUserController
+    loginUserController,
+    getUserController
 
 }

@@ -1,15 +1,16 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
 
      const [signupInfo, setsignUpInfo] = useState({
-        name: "",
+        username: "",
         email: "",
         password: "",
     });
     // const [validationErrors,setValidationErrors] = useState({})
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
@@ -17,8 +18,14 @@ const SignUp = () => {
         // api call 
 
          try {
-            const response = await axios.post(`${import.meta.BASE_URL}/api/user/signup`,signupInfo)
-           console.log('response',response)
+            // console.log(`${import.meta.BASE_URL}/api/user/signup`)
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/registerUser`,signupInfo)
+            
+            if(response.status == 201){
+            localStorage.setItem('token',response.data.token)
+            localStorage.setItem('loggedInUser',JSON.stringify(response.data.user))
+            navigate('/dashboard')
+            }
 
            } catch (error) {
             console.error('err',error)
@@ -45,8 +52,8 @@ const SignUp = () => {
                         </label>
                         <input
                             type="text"
-                            name="name"
-                            value={signupInfo.name}
+                            name="username"
+                            value={signupInfo.username}
                             onChange={handleChange}
                             required
                             className="w-full border border-gray-300 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"

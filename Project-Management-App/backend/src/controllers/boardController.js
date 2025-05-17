@@ -38,8 +38,10 @@ const createBoardController = async (req, res) => { // create board with title i
 const getAllBoardsController = async (req, res) => { // get all boards of logged-in user
 
     try {
-        const userId = req.userId
-        const allBoards = await boardServices.getAllBoards(userId)
+        // const userId = req.userId
+        const allBoards = await boardServices.getAllBoards()
+        // console.log('userId-',userId)
+        // console.log('allBoards-',allBoards)
         return res.status(201).json({ message: 'all boards', allBoards: allBoards })
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -106,9 +108,21 @@ const addMemberController = async (req, res) => {
 const deleteBoardController = async (req, res) => {
     const { boardId } = req.params;
   
-    await BoardModel.findByIdAndDelete(boardId);
+    try {
+        await boardServices.deleteBoard(boardId)
   
-    res.status(200).json({ message: 'Board deleted' });
+   res.status(200).json({ 
+            success: true,
+            message: 'Board and all related lists and tasks deleted successfully' 
+        });
+
+    } catch (error) {
+         res.status(500).json({ 
+            success: false,
+            message: 'Error deleting board', 
+            error: error.message 
+        });
+    }
 };
 
 export default {
