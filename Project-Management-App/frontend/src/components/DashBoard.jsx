@@ -106,6 +106,7 @@ const DashBoard = () => {
 
   // drag-n-drop handlers
 
+  // when start item drag this fn execute
   const handleDragStart = (e, task, list) => {
 
     // dragable item ko set kiya
@@ -115,6 +116,7 @@ const DashBoard = () => {
     dragContainer.current = list
   }
 
+  // when drag end we set opacity to original
   const handleDragEnd = (e) => {
     // on drop opacity of element is goinig to be 1
     e.target.style.opacity = '1'
