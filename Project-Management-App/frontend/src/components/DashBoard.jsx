@@ -2,14 +2,16 @@ import React, { useRef } from 'react'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const DashBoard = () => {
 
   const [boards, setBoards] = useState(null)
   const dragItem = useRef()
   const dragContainer = useRef()
+  const [dragContainerId,setdragContainerId] = useState()
   const [updatedTask, setUpdatedTask] = useState()
+  const navigate = useNavigate()
 
   const FetchBoards = async () => {
 
@@ -96,21 +98,32 @@ const DashBoard = () => {
 
   }
 
-  // drag-n-drop fn
+  const handleLogout = () =>{
+      // Todo: make api to logout in backend 
+        localStorage.clear()
+        navigate('/')
+  }
+
+  // drag-n-drop handlers
+
   const handleDragStart = (e, task, list) => {
-    e.target.style.opacity = '0.5'
+
+    // dragable item ko set kiya
+    // and container me list ko save kiya
+    e.target.style.opacity = '0.5' // we reduce opacity of element from source list
     dragItem.current = task
     dragContainer.current = list
-
-    console.log('dragItem--', dragItem)
-    console.log('dragContainer--', dragContainer)
   }
 
   const handleDragEnd = (e) => {
+    // on drop opacity of element is goinig to be 1
     e.target.style.opacity = '1'
   }
-
+ 
+  // api hit after item drop
   const handleDrop = async (e, list) => {
+
+    // this executes when we drop item on div and then make api call to change the its position
     const destinationList = list
     const sourceList = dragContainer
     const task = dragItem
@@ -118,6 +131,7 @@ const DashBoard = () => {
     console.log('sourceList--', sourceList)
     console.log('destinationList--', destinationList)
     console.log('task--', task)
+    setdragContainerId() // hover border ko reset kiya
 
     // api call
     const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/task/moveTask/${task.current._id}`, {
@@ -136,14 +150,23 @@ const DashBoard = () => {
     }
   }
 
-  const handleDragOver = (e) => {
-    e.preventDefault()
+  // here we handle hum apana item drag karke kis kis list ke upar se le ja rahe hai
+  const handleDragOver = (e,list) => {
+    e.preventDefault() 
+    // prevent karo otherwise element drag nahi hoga (this actual indentify ki humara jo drag item hai kis div ke upar hai)
+    // eg- agar item todo list me hai and mene use drag karake done pe hover kiya drop nahi kiya sirf hover kiya to to 
+    // jis list pe hover kiya uska data mil jayega
+    console.log('onDragOver-',list)
+    // here hum jis bhi list ke upar hamara div ayega uski id set karenge so uske hisab se hum styling karenge scale ko badha denge
+    setdragContainerId(list._id) 
   }
 
 
 
   return (
     <div>
+
+      {/* Nav-bar  */}
       <nav className='flex justify-between px-4 my-4 border p-2 rounded-md mx-2 items-center'>
         <div className='text-xl font-bold'>Trello-lite</div>
         <div className='flex gap-2'>
@@ -151,7 +174,7 @@ const DashBoard = () => {
             Add Board
           </Link>
 
-          <button className='bg-red-600 text-white px-2 py-1 rounded-md'>
+          <button onClick={handleLogout} className='bg-red-600 text-white px-2 py-1 rounded-md cursor-pointer'>
             Logout
           </button>
         </div>
@@ -168,7 +191,7 @@ const DashBoard = () => {
           {
             boards ? (boards?.map((board, idx) => (
               <div key={idx} className='border space-y-3'>
-
+                 {/* create, add member, delete buttons  */}
                 <div className='flex justify-between items-center mt-2 px-2' >
                   <span className='text-xl font-semibold px-2 '>{board?.title}</span>
                   <span className='flex items-center gap-3'>
@@ -177,14 +200,16 @@ const DashBoard = () => {
                     <button onClick={()=>deleteBoard(board._id)} className='bg-red-700 text-white px-2 py-1 rounded-md cursor-pointer' >Delete</button>
                   </span>
                 </div>
-                <div className='flex gap-2 border justify-evenly h-[500px]'>
+
+                <div className='flex gap-2 border justify-evenly h-[500px] py-5'>
                   {
                     board.lists?.length > 0 ? (board?.lists?.map((list, idx) => (
+                      // lists (todos, in-progress, done etc)
                       <div
                         key={idx}
                         onDrop={(e) => handleDrop(e, list)}
-                        onDragOver={handleDragOver}
-                        className='border  w-80 space-y-1 grid grid-rows-10'>
+                        onDragOver={(e)=>handleDragOver(e,list)}
+                        className={` ${dragContainerId === list._id ? "border border-blue-500 scale-102 transition delay-1 duration-300 ease-in-out" : "p-0"}   w-80 space-y-1 grid grid-rows-10`}>
                         <div className='font-semibold border row-span-1 flex items-center justify-center'>{list?.title}</div>
                         <div className='border border-b-cyan-950 row-span-7 overflow-scroll p-2'>
                           {/* render tasks here  */}
@@ -193,9 +218,9 @@ const DashBoard = () => {
                               list?.tasks?.map((task, idx) => (
                                 <li
                                   key={idx}
-                                  draggable
-                                  onDragStart={(e) => handleDragStart(e, task, list)}
-                                  onDragEnd={(e) => handleDragEnd(e)}
+                                  draggable // now we can drag this item
+                                  onDragStart={(e) => handleDragStart(e, task, list)} // here jaise hi hum item ko select karenge hum item and list ko set kardenge
+                                  onDragEnd={(e) => handleDragEnd(e)} // here we prevent its behaviour
                                   className='flex flex-col border rounded-md p-2 bg-gray-200 cursor-move'>
                                   <span className=' text-xl font-semibold'>{task?.title}</span>
                                   <span>{task?.description}</span>
