@@ -101,8 +101,8 @@ const TodoHome = () => {
 
     return (
         <div className=''>
-            <div className='   w-7xl mx-auto h-screen'>
-                
+            <div className='w-7xl mx-auto h-screen border border-red-500'>
+                 {/* todo input box */}
                 <div className=' flex justify-center gap-4 my-16 '>
                     <input
                         type="text"
@@ -115,6 +115,7 @@ const TodoHome = () => {
                     <button onClick={() => addTodo()} className='bg-blue-500 text-white px-4 py-2 rounded-md'>Add</button>
                 </div>
                 <div className='w-[80%] mx-auto'>
+                    {/* filter */}
                     <div className=' flex gap-2 justify-end dark:text-white my-4'>
                         <span>Filter: </span>
                         <select value={selectedFilter} onChange={(e) => setFilter(e.target.value)} className=' border text-black rounded-md px-2' name="" id="">
@@ -123,9 +124,11 @@ const TodoHome = () => {
                             <option value="pending">pending</option>
                         </select>
                     </div>
+                    {/* todo board */}
                     <div className='border border-black  flex flex-col items-center gap-4 py-4 rounded-md'>
                         {/* map todos here */}
                         {todos.length > 0 ? (todos?.map((todo) => (
+                            // todo item
                             <div key={todo.id} className='flex justify-between border border-black w-[50%] py-2 px-2 rounded-md dark:text-white'>
 
                                 <div className='flex  gap-3 '>
